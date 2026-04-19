@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 10px;
+  }
+
+  .dark ::-webkit-scrollbar-thumb {
+    background: #334155;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #cbd5e1;
+  }
+
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+  }
+}
+
+.markdown-body {
+  @apply transition-colors;
+}
+
+.dark .markdown-body {
+  @apply text-slate-300;
+}
+
+.dark .markdown-body strong {
+  @apply text-white font-bold;
+}
+
+.dark .markdown-body h1, 
+.dark .markdown-body h2, 
+.dark .markdown-body h3 {
+  @apply text-white;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
