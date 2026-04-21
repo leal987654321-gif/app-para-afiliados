@@ -149,9 +149,24 @@ const calculateStabilityScore = (product: Product, timeframe: '1w' | '1q' | '6m'
 
 // --- Gemini Service ---
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const getApiKey = () => {
+  return process.env.GEMINI_API_KEY;
+};
+
+let ai: GoogleGenAI | null = null;
+try {
+  const key = getApiKey();
+  if (key) {
+    ai = new GoogleGenAI({ apiKey: key });
+  }
+} catch (e) {
+  console.error("Gemini AI failed to initialize:", e);
+}
 
 async function researchProducts(query: string, lang: Language): Promise<ResearchResult> {
+  if (!ai) {
+    throw new Error("AI service not initialized. Please configure GEMINI_API_KEY.");
+  }
   const prompt = `Research the top-selling health products in the USA for the niche: "${query}". 
   Focus on niches like Weight Loss, Diabetes, Nutraceuticals, Men's Health, Women's Health, Skin Care, Dental Care, and Mental Health. 
   Provide a list of 8-12 real or highly representative top-selling products.
