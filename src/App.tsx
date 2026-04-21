@@ -196,7 +196,6 @@ async function researchProducts(query: string, lang: Language): Promise<Research
     model: "gemini-3-flash-preview",
     contents: prompt,
     config: {
-      tools: [{ googleSearch: {} }],
       responseMimeType: "application/json",
       responseSchema: {
         type: Type.OBJECT,
@@ -208,20 +207,7 @@ async function researchProducts(query: string, lang: Language): Promise<Research
               properties: {
                 id: { type: Type.STRING },
                 name: { type: Type.STRING },
-                category: { 
-                  type: Type.STRING, 
-                  enum: [
-                    'Weight Loss', 
-                    'Diabetes', 
-                    'Nutraceuticals', 
-                    'General Health', 
-                    "Men's Health", 
-                    "Women's Health", 
-                    'Skin Care', 
-                    'Dental Care', 
-                    'Mental Health'
-                  ] 
-                },
+                category: { type: Type.STRING },
                 price: { type: Type.NUMBER },
                 salesVolume: { type: Type.NUMBER },
                 commission: { type: Type.NUMBER },
@@ -229,7 +215,7 @@ async function researchProducts(query: string, lang: Language): Promise<Research
                 description: { type: Type.STRING },
                 pros: { type: Type.ARRAY, items: { type: Type.STRING } },
                 cons: { type: Type.ARRAY, items: { type: Type.STRING } },
-                trend: { type: Type.STRING, enum: ['up', 'stable', 'down'] }
+                trend: { type: Type.STRING }
               },
               required: ['name', 'category', 'price', 'salesVolume', 'commission', 'gravity', 'description', 'trend']
             }
@@ -492,10 +478,26 @@ export default function App() {
         </header>
 
         {error && (
-          <div className="bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800 p-4 rounded-xl mb-8 flex items-center gap-3 text-rose-600 dark:text-rose-400 text-sm">
-            <Activity size={20} />
-            <p className="font-medium">{t.errorOccurred || error}</p>
-            <button onClick={() => handleSearch()} className="ml-auto underline font-bold">{t.reset || 'Retry'}</button>
+          <div className="bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800 p-4 rounded-xl mb-8 flex flex-col gap-2 text-rose-600 dark:text-rose-400 text-sm">
+            <div className="flex items-center gap-3">
+              <Activity size={20} />
+              <p className="font-medium">{t.errorOccurred || "A search error occurred."}</p>
+              <button 
+                onClick={() => {
+                  setQuery('');
+                  handleSearch();
+                }} 
+                className="ml-auto underline font-bold"
+              >
+                {t.reset || 'Reset'}
+              </button>
+            </div>
+            <p className="text-[10px] opacity-70 mt-1 font-mono break-all">{error}</p>
+            {error.includes("Needs GEMINI_API_KEY") && (
+              <p className="text-[10px] bg-white dark:bg-slate-900 p-2 rounded border border-rose-100 dark:border-rose-800/50 mt-2">
+                Atenção: A chave da API Gemini não foi encontrada no ambiente (Vercel). Certifique-se de adicioná-la nas configurações do projeto Vercel como <code className="font-bold">GEMINI_API_KEY</code> e realizar um novo deploy.
+              </p>
+            )}
           </div>
         )}
 
