@@ -84,7 +84,8 @@ export const translations = {
     readMore: "Read More",
     readLess: "Read Less",
     darkMode: "Dark Mode",
-    lightMode: "Light Mode"
+    lightMode: "Light Mode",
+    errorOccurred: "A research error occurred. Please try again or check your API configuration."
   },
   pt: {
     appName: "HealthAffiliate",
@@ -169,7 +170,8 @@ export const translations = {
     readMore: "Ler Mais",
     readLess: "Ler Menos",
     darkMode: "Modo Escuro",
-    lightMode: "Modo Claro"
+    lightMode: "Modo Claro",
+    errorOccurred: "Ocorreu um erro na pesquisa. Tente novamente ou verifique as configurações da API."
   },
   es: {
     appName: "HealthAffiliate",
@@ -254,6 +256,7 @@ export const translations = {
     readMore: "Leer Más",
     readLess: "Leer Menos",
     darkMode: "Modo Oscuro",
-    lightMode: "Modo Claro"
+    lightMode: "Modo Claro",
+    errorOccurred: "Ocurrió un error en la búsqueda. Intente de nuevo o verifique la configuración de la API."
   }
 };

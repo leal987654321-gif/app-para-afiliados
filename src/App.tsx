@@ -165,7 +165,7 @@ try {
 
 async function researchProducts(query: string, lang: Language): Promise<ResearchResult> {
   if (!ai) {
-    throw new Error("AI service not initialized. Please configure GEMINI_API_KEY.");
+    throw new Error("AI service not initialized. Needs GEMINI_API_KEY.");
   }
   const prompt = `Research the top-selling health products in the USA for the niche: "${query}". 
   Focus on niches like Weight Loss, Diabetes, Nutraceuticals, Men's Health, Women's Health, Skin Care, Dental Care, and Mental Health. 
@@ -241,15 +241,20 @@ async function researchProducts(query: string, lang: Language): Promise<Research
     }
   });
 
+  const jsonStr = response.text;
+  if (!jsonStr) {
+    throw new Error("No response text from AI.");
+  }
+
   try {
-    const data = JSON.parse(response.text);
+    const data = JSON.parse(jsonStr);
     return {
-      products: data.products.map((p: any, i: number) => ({ ...p, id: p.id || `prod-${i}` })),
+      products: data.products.map((p: any, i: number) => ({ ...p, id: p.id || `prod-${i}-${Date.now()}` })),
       marketInsights: data.marketInsights
     };
   } catch (e) {
-    console.error("Failed to parse Gemini response", e);
-    throw new Error("Failed to fetch research data.");
+    console.error("Failed to parse Gemini response", e, jsonStr);
+    throw new Error("Failed to parse research data.");
   }
 }
 
@@ -276,6 +281,7 @@ export default function App() {
     return localStorage.getItem('healthAffiliate_query') || '';
   });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<ResearchResult | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -326,13 +332,15 @@ export default function App() {
     const searchQuery = query || (lang === 'pt' ? 'Saúde e Emagrecimento' : 'Weight Loss & Health');
     
     setLoading(true);
+    setError(null);
     localStorage.setItem('healthAffiliate_query', searchQuery);
     try {
       const result = await researchProducts(searchQuery, lang);
       setData(result);
       setSelectedProduct(null);
-    } catch (error) {
-      console.error(error);
+    } catch (err: any) {
+      console.error(err);
+      setError(err.message || "An error occurred during search.");
     } finally {
       setLoading(false);
     }
@@ -482,6 +490,14 @@ export default function App() {
           <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white mb-2">{t.dashboardTitle}</h1>
           <p className="text-slate-500 dark:text-slate-400">{t.dashboardSubtitle}</p>
         </header>
+
+        {error && (
+          <div className="bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800 p-4 rounded-xl mb-8 flex items-center gap-3 text-rose-600 dark:text-rose-400 text-sm">
+            <Activity size={20} />
+            <p className="font-medium">{t.errorOccurred || error}</p>
+            <button onClick={() => handleSearch()} className="ml-auto underline font-bold">{t.reset || 'Retry'}</button>
+          </div>
+        )}
 
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
