@@ -736,7 +736,7 @@ export default function App() {
 
               <div className="h-[350px] w-full relative">
                 {chartData.length > 0 ? (
-                  <ResponsiveContainer width="100%" height="100%" debounce={1}>
+                  <ResponsiveContainer width="100%" height="100%" debounce={1} minWidth={0}>
                     <ComposedChart data={chartData} layout="vertical" margin={{ left: 0, right: 30, top: 10 }}>
                       <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke={darkMode ? "#1e293b" : "#f1f5f9"} />
                       <XAxis type="number" xAxisId="vol" hide />
@@ -896,7 +896,7 @@ export default function App() {
                         </div>
                       </div>
                       <div className="h-24 w-full">
-                        <ResponsiveContainer width="100%" height="100%">
+                        <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                           <AreaChart data={trendData}>
                             <defs>
                               <linearGradient id="colorVol" x1="0" y1="0" x2="0" y2="1">
